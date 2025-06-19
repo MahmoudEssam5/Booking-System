@@ -32,7 +32,7 @@ class BookingConfirmationMail extends Mailable
         );
     }
 
-    public function build()
+    public function build(): BookingConfirmationMail
     {
         return $this->subject('Booking Confirmation')
             ->view('emails.booking-confirmation');

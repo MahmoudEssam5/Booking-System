@@ -21,12 +21,20 @@ class BookingStatusUpdated extends Mailable
         $this->booking = $booking;
     }
 
-    public function build()
+    public function build(): static
     {
-        return $this->subject('Your Interview Status Has Been Updated')
-            ->view('emails.booking-status-updated')
-            ->with(['booking' => $this->booking]);
+        $subject = $this->booking->status === 'confirmed'
+            ? 'Your Interview is Confirmed'
+            : 'Your Interview Has Been Cancelled';
+
+        $view = $this->booking->status === 'confirmed'
+            ? 'emails.booking-confirmed-on-interview'
+            : 'emails.booking-cancelled-on-interview';
+
+        return $this->subject($subject)
+            ->view($view);
     }
+
 
     /**
      * Get the message envelope.

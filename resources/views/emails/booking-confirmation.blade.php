@@ -5,26 +5,29 @@
     <title>Interview Booking Confirmation</title>
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-<h2>Hello {{ $booking->candidate_name }},</h2>
+<h2>Dear {{ $booking->candidate_name }},</h2>
 
-<p>Thank you for booking an interview for the <strong>{{ $booking->position_applied }}</strong> position.</p>
+<p>Thank you for scheduling your interview for the <strong>{{ $booking->position_applied }}</strong> position.</p>
 
-<p>Your booking has been received successfully. Our team will contact you shortly with further details.</p>
+<p>We are pleased to confirm that your interview has been successfully booked. A member of our recruitment team will reach out to you shortly with any additional information you may need.</p>
 
-<h3>Interview Details:</h3>
+<h3>📅 Interview Details:</h3>
 <ul>
     <li><strong>Date & Time:</strong> {{ $booking->slot->start_datetime->format('l, F j, Y \a\t h:i A') }}</li>
-    <li><strong>Type:</strong> {{ $booking->interview_type }}</li>
+    <li><strong>Interview Type:</strong> {{ $booking->interview_type }}</li>
     <li><strong>Location:</strong> {{ $booking->slot->location }}</li>
 </ul>
 
 @if($booking->candidate_notes)
-    <p><strong>Your Notes:</strong> {{ $booking->candidate_notes }}</p>
+    <p><strong>Candidate Notes:</strong> {{ $booking->candidate_notes }}</p>
 @endif
 
-<p>If you have any questions, feel free to reply to this email.</p>
+<p>If you have any questions or need to make changes to your booking, feel free to reply to this email and we’ll be happy to assist.</p>
 
-<p>Best regards,<br>
-    The Recruitment Team</p>
+<p>We look forward to speaking with you.</p>
+
+<p>Kind regards,<br>
+    <strong>The Recruitment Team</strong><br>
+    [Your Company Name]</p>
 </body>
 </html>

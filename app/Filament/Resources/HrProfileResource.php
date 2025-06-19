@@ -46,7 +46,11 @@ class HrProfileResource extends Resource
                 Forms\Components\TextInput::make('department'),
                 Forms\Components\TextInput::make('position'),
                 Forms\Components\Textarea::make('bio'),
-                Forms\Components\FileUpload::make('profile_image')->image(),
+                Forms\Components\FileUpload::make('profile_image')
+                    ->image()
+                    ->directory('uploads/profiles')
+                    ->disk('public')
+                    ->visibility('public'),
                 Forms\Components\TextInput::make('booking_link_slug'),
                 Forms\Components\CheckboxList::make('notification_preferences')
                     ->label('Notification Preferences')
