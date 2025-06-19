@@ -6,11 +6,14 @@ use App\Filament\Resources\BookingResource\Pages;
 use App\Filament\Resources\BookingResource\RelationManagers;
 use App\Models\Booking;
 use Filament\Forms;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -36,24 +39,32 @@ class BookingResource extends Resource
     {
         return $form
             ->schema([
-                TexTInput::make('hr_user_id'),
-                TextInput::make('slot_id'),
-                TextInput::make('candidate_name'),
-                TextInput::make('candidate_email'),
-                TextInput::make('candidate_phone'),
-                TextInput::make('position_applied'),
-                TextInput::make('interview_type'),
-                Select::make('status')
-                    ->options([
-                            'pending' => 'Pending',
-                            'confirmed' => 'Confirmed',
-                            'cancelled' => 'Cancelled',
-                        ]),
-                TextInput::make('candidate_notes'),
-                TextInput::make('hr_notes'),
-                TextInput::make('booking_token'),
-                TextInput::make('confirmed_at'),
-                TextInput::make('cancelled_at'),
+                Section::make()
+                    ->schema([
+                        TexTInput::make('hr_user_id'),
+                        TextInput::make('slot_id'),
+                        TextInput::make('candidate_name'),
+                        TextInput::make('candidate_email'),
+                        TextInput::make('candidate_phone'),
+                        TextInput::make('position_applied'),
+                        Select::make('interview_type')
+                            ->options([
+                                'initial' =>'Initial',
+                                'technical' =>'Technical',
+                                'final' => 'Final'
+                            ]),
+                        Select::make('status')
+                            ->options([
+                                'pending' => 'Pending',
+                                'confirmed' => 'Confirmed',
+                                'cancelled' => 'Cancelled',
+                            ]),
+                        TextInput::make('candidate_notes'),
+                        TextInput::make('hr_notes'),
+                        Hidden::make('booking_token'),
+                        TextInput::make('confirmed_at'),
+                        TextInput::make('cancelled_at'),
+                    ])->columns(2),
             ]);
     }
 
@@ -61,13 +72,18 @@ class BookingResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('slot_id'),
+                TextColumn::make('slot.title'),
                 TextColumn::make('candidate_name'),
                 TextColumn::make('position_applied'),
                 TextColumn::make('candidate_email'),
                 TextColumn::make('candidate_phone'),
                 TextColumn::make('interview_type'),
-                TextColumn::make('status'),
+                SelectColumn::make('status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'confirmed' => 'Confirmed',
+                        'cancelled' => 'Cancelled',
+                    ]),
                 TextColumn::make('candidate_notes'),
                 TextColumn::make('hr_notes'),
                 TextColumn::make('booking_token'),

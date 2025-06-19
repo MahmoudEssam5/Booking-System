@@ -22,7 +22,7 @@ class BookingCalendar extends Component
         $this->selectedSlotId = $slotId;
     }
 
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
     {
         $slots = $this->hr->user
             ->availabilitySlots()

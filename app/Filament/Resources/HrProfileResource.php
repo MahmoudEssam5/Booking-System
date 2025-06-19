@@ -48,7 +48,16 @@ class HrProfileResource extends Resource
                 Forms\Components\Textarea::make('bio'),
                 Forms\Components\FileUpload::make('profile_image')->image(),
                 Forms\Components\TextInput::make('booking_link_slug'),
-                Forms\Components\Textarea::make('notification_preferences')->json(),
+                Forms\Components\CheckboxList::make('notification_preferences')
+                    ->label('Notification Preferences')
+                    ->options([
+                        'new_booking' => 'New Booking',
+                        'cancellation' => 'Cancellation',
+                        'reminder_1_day' => 'Reminder (1 day before)',
+                        'reminder_2_hours' => 'Reminder (2 hours before)',
+                    ])
+                    ->columns(2)
+                    ->default(['new_booking', 'reminder_1_day']),
                 Forms\Components\TextInput::make('timezone'),
             ]);
     }

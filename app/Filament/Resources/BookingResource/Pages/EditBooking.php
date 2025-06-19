@@ -20,15 +20,4 @@ use Illuminate\Support\Facades\Mail;
         ];
     }
 
-    protected function afterSave(): void
-    {
-        $booking = $this->record;
-
-        if (in_array($booking->status, ['confirmed', 'cancelled'])) {
-            Mail::to($booking->candidate_email)->send(new BookingStatusUpdated($booking));
-
-        }
-
-
-    }
 }

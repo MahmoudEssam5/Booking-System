@@ -84,7 +84,7 @@ class UserResource extends Resource
     public static function canAccess(): bool
     {
         $user = auth()->user();
-        if($user->role == 'super_admin'){
+        if($user->role == 'admin'){
             return true;
         }
         return false;

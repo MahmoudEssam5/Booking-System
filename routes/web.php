@@ -6,8 +6,8 @@ use App\Livewire\BookingCalendar;
 
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return redirect()->route('filament.admin.auth.login');
+})->name('admin/login');
 
 
 Route::get('/book/{slug}', BookingCalendar::class);

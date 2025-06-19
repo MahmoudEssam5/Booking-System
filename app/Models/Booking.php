@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\Mail\BookingStatusUpdated;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class Booking extends Model
 {
@@ -26,6 +29,15 @@ class Booking extends Model
         'confirmed_at' => 'datetime',
         'cancelled_at' => 'datetime',
     ];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            $model->booking_token = (string)Str::uuid();
+        });
+    }
+
 
     public function slot(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

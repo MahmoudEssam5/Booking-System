@@ -44,8 +44,17 @@ class SlotsResource extends Resource
                 Forms\Components\DateTimePicker::make('start_datetime')->required(),
                 Forms\Components\DateTimePicker::make('end_datetime')->required(),
                 Forms\Components\TextInput::make('duration_minutes')->numeric()->required(),
-                Forms\Components\Select::make('location')->options(['Office', 'Remote', 'Hybrid']),
-                Forms\Components\Select::make('interview_type')->options(['Initial', 'Technical', 'Final']),
+                Forms\Components\Select::make('location')
+                    ->options([
+                        'office' => 'Office',
+                        'remote' => 'Remote',
+                        'hybrid' => 'Hybrid']),
+                Forms\Components\Select::make('interview_type')
+                    ->options([
+                       'initial' =>'Initial',
+                        'technical' =>'Technical',
+                        'final' => 'Final'
+                    ]),
                 Forms\Components\Textarea::make('description'),
                 Toggle::make('is_recurring')
                     ->label('Is Recurring')
