@@ -39,4 +39,5 @@ class AvailabilitySlot extends Model
     {
         return $this->hasMany(Booking::class, 'slot_id');
     }
+
 }

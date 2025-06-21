@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class SendBookingReminder implements ShouldQueue
 {
@@ -18,37 +19,43 @@ class SendBookingReminder implements ShouldQueue
 
     public function handle(): void
     {
-        $reminderTimes = [
-            now()->addDay()->format('Y-m-d H:i'),
-            now()->addHours(2)->format('Y-m-d H:i'),
-        ];
+        $now = now();
 
-        $bookings = Booking::where('status', 'confirmed')
-            ->whereIn(\DB::raw("DATE_FORMAT(start_datetime, '%Y-%m-%d %H:%i')"), $reminderTimes)
+        $oneDayStart = $now->copy()->addDay()->startOfMinute();
+        $oneDayEnd = $oneDayStart->copy()->endOfMinute();
+
+        $twoHoursStart = $now->copy()->addHours(2)->startOfMinute();
+        $twoHoursEnd = $twoHoursStart->copy()->endOfMinute();
+
+        $bookings = Booking::with(['hr.profile'])
+            ->where('status', 'confirmed')
+            ->where(function ($query) use ($oneDayStart, $oneDayEnd, $twoHoursStart, $twoHoursEnd) {
+                $query->whereBetween('start_datetime', [$oneDayStart, $oneDayEnd])
+                    ->orWhereBetween('start_datetime', [$twoHoursStart, $twoHoursEnd]);
+            })
             ->get();
 
         foreach ($bookings as $booking) {
             Mail::to($booking->candidate_email)->queue(new BookingReminder($booking));
+            Log::info("Booking reminder sent to candidate: {$booking->candidate_email}");
 
-            $hrPreferences = $booking->hr?->profile?->notification_preferences ?? [];
+            $hr = $booking->hr;
+            $preferences = $hr?->profile?->notification_preferences ?? [];
 
-            if (!empty($hrPreferences['reminder_1_day']) && $this->is1DayReminder($booking)) {
-                Mail::to($booking->hr->email)->queue(new BookingReminderToHR($booking));
+            if (!empty($preferences['reminder_1_day']) && $this->isWithinMinuteRange($booking->start_datetime, $oneDayStart)) {
+                Mail::to($hr->email)->queue(new BookingReminderToHR($booking));
+                Log::info("1-day reminder sent to HR: {$hr->email}");
             }
 
-            if (!empty($hrPreferences['reminder_2_hours']) && $this->is2HoursReminder($booking)) {
-                Mail::to($booking->hr->email)->queue(new BookingReminderToHR($booking));
+            if (!empty($preferences['reminder_2_hours']) && $this->isWithinMinuteRange($booking->start_datetime, $twoHoursStart)) {
+                Mail::to($hr->email)->queue(new BookingReminderToHR($booking));
+                Log::info("2-hours reminder sent to HR: {$hr->email}");
             }
         }
     }
 
-    protected function is1DayReminder(Booking $booking): bool
+    protected function isWithinMinuteRange($datetime, $target): bool
     {
-        return \Carbon\Carbon::parse($booking->start_datetime)->format('Y-m-d H:i') === now()->addDay()->format('Y-m-d H:i');
-    }
-
-    protected function is2HoursReminder(Booking $booking): bool
-    {
-        return \Carbon\Carbon::parse($booking->start_datetime)->format('Y-m-d H:i') === now()->addHours(2)->format('Y-m-d H:i');
+        return $datetime->between($target, $target->copy()->endOfMinute());
     }
 }

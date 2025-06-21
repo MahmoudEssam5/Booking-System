@@ -8,6 +8,7 @@ use App\Models\HrProfile;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -41,28 +42,31 @@ class HrProfileResource extends Resource
         $user = auth()->user();
         return $form
             ->schema([
-                Hidden::make('user_id')
-                    ->default($user->id),
-                Forms\Components\TextInput::make('department'),
-                Forms\Components\TextInput::make('position'),
-                Forms\Components\Textarea::make('bio'),
-                Forms\Components\FileUpload::make('profile_image')
-                    ->image()
-                    ->directory('uploads/profiles')
-                    ->disk('public')
-                    ->visibility('public'),
-                Forms\Components\TextInput::make('booking_link_slug'),
-                Forms\Components\CheckboxList::make('notification_preferences')
-                    ->label('Notification Preferences')
-                    ->options([
-                        'new_booking' => 'New Booking',
-                        'cancellation' => 'Cancellation',
-                        'reminder_1_day' => 'Reminder (1 day before)',
-                        'reminder_2_hours' => 'Reminder (2 hours before)',
-                    ])
-                    ->columns(2)
-                    ->default(['new_booking', 'reminder_1_day']),
-                Forms\Components\TextInput::make('timezone'),
+                Section::make()
+                    ->schema([
+                        Hidden::make('user_id')
+                            ->default($user->id),
+                        Forms\Components\TextInput::make('department'),
+                        Forms\Components\TextInput::make('position'),
+                        Forms\Components\Textarea::make('bio'),
+                        Forms\Components\FileUpload::make('profile_image')
+                            ->image()
+                            ->directory('uploads/profiles')
+                            ->disk('public')
+                            ->visibility('public'),
+                        Forms\Components\TextInput::make('booking_link_slug'),
+                        Forms\Components\TextInput::make('timezone'),
+                        Forms\Components\CheckboxList::make('notification_preferences')
+                            ->label('Notification Preferences')
+                            ->options([
+                                'new_booking' => 'New Booking',
+                                'cancellation' => 'Cancellation',
+                                'reminder_1_day' => 'Reminder (1 day before)',
+                                'reminder_2_hours' => 'Reminder (2 hours before)',
+                            ])
+                            ->columns(2)
+                            ->default(['new_booking', 'reminder_1_day']),
+                    ])->columns(2),
             ]);
     }
 

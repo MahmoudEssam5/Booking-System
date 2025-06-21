@@ -7,6 +7,7 @@ use App\Filament\Resources\SlotsResource\RelationManagers;
 use App\Models\AvailabilitySlot;
 use Filament\Forms;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
@@ -39,33 +40,35 @@ class SlotsResource extends Resource
     {
         return $form
             ->schema([
-                Hidden::make('hr_user_id')->default(auth()->id()),
-                Forms\Components\TextInput::make('title')->required(),
-                Forms\Components\DateTimePicker::make('start_datetime')->required(),
-                Forms\Components\DateTimePicker::make('end_datetime')->required(),
-                Forms\Components\TextInput::make('duration_minutes')->numeric()->required(),
-                Forms\Components\Select::make('location')
-                    ->options([
-                        'office' => 'Office',
-                        'remote' => 'Remote',
-                        'hybrid' => 'Hybrid']),
-                Forms\Components\Select::make('interview_type')
-                    ->options([
-                       'initial' =>'Initial',
-                        'technical' =>'Technical',
-                        'final' => 'Final'
-                    ]),
-                Forms\Components\Textarea::make('description'),
-                Toggle::make('is_recurring')
-                    ->label('Is Recurring')
-                    ->reactive(),
+                Section::make()
+                    ->schema([
+                        Hidden::make('hr_user_id')->default(auth()->id()),
+                        Forms\Components\TextInput::make('title')->required(),
+                        Forms\Components\DateTimePicker::make('start_datetime')->required(),
+                        Forms\Components\DateTimePicker::make('end_datetime')->required(),
+                        Forms\Components\TextInput::make('duration_minutes')->numeric()->required(),
+                        Forms\Components\Select::make('location')
+                            ->options([
+                                'office' => 'Office',
+                                'remote' => 'Remote',
+                                'hybrid' => 'Hybrid']),
+                        Forms\Components\Select::make('interview_type')
+                            ->options([
+                                'initial' =>'Initial',
+                                'technical' =>'Technical',
+                                'final' => 'Final'
+                            ]),
+                        Forms\Components\Textarea::make('description'),
+                        Textarea::make('recurring_pattern')
+                            ->label('Recurring Pattern (JSON)')
+                            ->json()
+                            ->visible(fn ($get) => $get('is_recurring') === true),
+                        Toggle::make('is_recurring')
+                            ->label('Is Recurring')
+                            ->reactive(),
 
-                Textarea::make('recurring_pattern')
-                    ->label('Recurring Pattern (JSON)')
-                    ->json()
-                    ->visible(fn ($get) => $get('is_recurring') === true),
-
-                Forms\Components\Toggle::make('is_active')->default(true),
+                        Forms\Components\Toggle::make('is_active')->default(true),
+                ])->columns(2),
             ]);
     }
 

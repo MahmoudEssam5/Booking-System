@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BookingResource\Pages;
 use App\Filament\Resources\BookingResource\RelationManagers;
+use App\Models\AvailabilitySlot;
 use App\Models\Booking;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
@@ -41,8 +43,24 @@ class BookingResource extends Resource
             ->schema([
                 Section::make()
                     ->schema([
-                        TexTInput::make('hr_user_id'),
-                        TextInput::make('slot_id'),
+                        Select::make('hr_user_id')
+                            ->label('HR')
+                            ->options(User::where('role', 'hr_manager')->pluck('name', 'id'))
+                            ->reactive()
+                            ->afterStateUpdated(fn (callable $set) => $set('slot_id', null))
+                            ->visible(fn () => auth()->user()->role === 'admin'),
+
+                        Select::make('slot_id')
+                            ->label('Slot')
+                            ->options(function (callable $get) {
+                                $hrId = $get('hr_user_id');
+                                if (!$hrId) return [];
+
+                                return AvailabilitySlot::where('hr_user_id', $hrId)
+                                    ->pluck('title', 'id');
+                            })
+                            ->required()
+                            ->reactive(),
                         TextInput::make('candidate_name'),
                         TextInput::make('candidate_email'),
                         TextInput::make('candidate_phone'),
@@ -72,7 +90,8 @@ class BookingResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('slot.title'),
+                TextColumn::make('slot.title')
+                    ->label('Slot Title'),
                 TextColumn::make('candidate_name'),
                 TextColumn::make('position_applied'),
                 TextColumn::make('candidate_email'),

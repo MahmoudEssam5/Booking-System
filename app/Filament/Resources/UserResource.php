@@ -6,6 +6,7 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -27,20 +28,25 @@ class UserResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            TextInput::make('name')->required(),
-            TextInput::make('email')->required()->email(),
-            TextInput::make('phone')->required(),
-            Select::make('role')
-                ->options([
-                    'hr_manager' => 'HR Manager',
-                    'admin' => 'Admin',
-                    'candidate' => 'Candidate',
-                ])
-                ->required(),
-            Forms\Components\TextInput::make('password')
-                ->password()
-                ->dehydrated(fn ($state) => filled($state))
-                ->dehydrateStateUsing(fn ($state) => bcrypt($state)),
+            Section::make()
+                ->schema([
+                    TextInput::make('name')->required(),
+                    TextInput::make('email')->required()->email(),
+                    TextInput::make('phone')->required(),
+                    Forms\Components\TextInput::make('password')
+                        ->password()
+                        ->dehydrated(fn ($state) => filled($state))
+                        ->dehydrateStateUsing(fn ($state) => bcrypt($state)),
+                    Select::make('role')
+                        ->options([
+                            'hr_manager' => 'HR Manager',
+                            'admin' => 'Admin',
+                            'candidate' => 'Candidate',
+                        ])
+                        ->required()
+                    ->columnSpanFull(),
+                ])->columns(2),
+
         ]);
     }
 

@@ -12,9 +12,9 @@ class BookingCalendar extends Component
 
     protected $listeners = ['selectSlot'];
 
-    public function mount($slug)
+    public function mount($slug): void
     {
-        $this->hr = HrProfile::where('booking_link_slug', $slug)->firstOrFail();
+        $this->hr = HrProfile::where('booking_link_slug', $slug)->FirstOrFail();
     }
 
     public function selectSlot($slotId): void
@@ -27,6 +27,7 @@ class BookingCalendar extends Component
         $slots = $this->hr->user
             ->availabilitySlots()
             ->where('is_active', true)
+            ->where('start_datetime', '>=', now())
             ->orderBy('start_datetime')
             ->get();
 

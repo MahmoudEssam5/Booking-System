@@ -49,7 +49,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function hrProfile()
+    public function HrProfile()
     {
         return $this->hasOne(HRProfile::class);
     }
