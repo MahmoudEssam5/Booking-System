@@ -51,9 +51,9 @@ class HrProfileResource extends Resource
                         Forms\Components\Textarea::make('bio'),
                         Forms\Components\FileUpload::make('profile_image')
                             ->image()
-                            ->directory('uploads/profiles')
                             ->disk('public')
-                            ->visibility('public'),
+                        ->directory('storage/profiles')
+                        ,
                         Forms\Components\TextInput::make('booking_link_slug'),
                         Forms\Components\TextInput::make('timezone'),
                         Forms\Components\CheckboxList::make('notification_preferences')
@@ -78,7 +78,8 @@ class HrProfileResource extends Resource
                 TextColumn::make('position'),
                 TextColumn::make('bio'),
                 ImageColumn::make('profile_image')
-                    ->disk('public'),
+                    ->circular()
+                    ->url(fn ($record) => asset('storage/profiles/' . $record->profile_image)),
                 TextColumn::make('booking_link_slug'),
                 TextColumn::make('notification_preferences'),
                 TextColumn::make('timezone'),
