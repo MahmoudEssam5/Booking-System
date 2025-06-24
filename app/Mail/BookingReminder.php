@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Mail;
-namespace App\Mail;
 
 use App\Models\Booking;
 use Illuminate\Bus\Queueable;
@@ -12,18 +11,17 @@ class BookingReminder extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $booking;
+    public Booking $booking;
 
     public function __construct(Booking $booking)
     {
-        $this->booking = $booking;
+        $this->booking = $booking->load('slot', 'hr');
     }
 
     public function build()
     {
-        return $this->subject('Reminder: Your Upcoming Interview')
+        return $this->subject('Reminder: Your interview is coming up')
             ->view('emails.booking_reminder')
-            ->with(['booking' => $this->booking]);
+            ->withBooking($this->booking);
     }
-
 }

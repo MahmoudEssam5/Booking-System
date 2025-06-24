@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Mail\BookingStatusUpdated;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -22,7 +23,9 @@ class Booking extends Model
         'hr_notes',
         'booking_token',
         'confirmed_at',
-        'cancelled_at'
+        'cancelled_at',
+        'notified_2_hours_at',
+        'notified_1_day_at',
     ];
 
     protected $casts = [
@@ -39,10 +42,11 @@ class Booking extends Model
     }
 
 
-    public function slot(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function slot(): belongsTo
     {
-        return $this->belongsTo(AvailabilitySlot::class);
+        return $this->belongsTo(AvailabilitySlot::class, 'slot_id');
     }
+
 
     public function hr(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

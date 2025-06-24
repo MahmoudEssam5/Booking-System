@@ -49,9 +49,15 @@ class User extends Authenticatable
         ];
     }
 
+    public function getNotificationPreferencesAttribute()
+    {
+        return $this->hrProfile?->notification_preferences ?? [];
+    }
+
+
     public function HrProfile()
     {
-        return $this->hasOne(HRProfile::class);
+        return $this->hasOne(HrProfile::class);
     }
 
     public function availabilitySlots()

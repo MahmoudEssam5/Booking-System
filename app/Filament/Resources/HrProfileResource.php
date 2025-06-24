@@ -79,7 +79,7 @@ class HrProfileResource extends Resource
                 TextColumn::make('bio'),
                 ImageColumn::make('profile_image')
                     ->circular()
-                    ->url(fn ($record) => asset(  $record->profile_image)),
+                    ->url(fn ($record) => asset( $record->profile_image)),
                 TextColumn::make('booking_link_slug'),
                 TextColumn::make('notification_preferences'),
                 TextColumn::make('timezone'),

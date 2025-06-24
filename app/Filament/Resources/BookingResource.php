@@ -108,6 +108,7 @@ class BookingResource extends Resource
                 TextColumn::make('booking_token'),
                 TextColumn::make('confirmed_at'),
                 TextColumn::make('cancelled_at'),
+                TextColumn::make('notified_2_hours_at')
             ])
             ->filters([
                 //

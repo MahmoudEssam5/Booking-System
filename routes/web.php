@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\HrProfile;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\BookingCalendar;
 
@@ -11,3 +10,7 @@ Route::get('/', function () {
 
 
 Route::get('/book/{slug}', BookingCalendar::class);
+
+//Route::get('/test-reminder-job', function () {
+//    SendBookingReminder::dispatchSync();
+//});
