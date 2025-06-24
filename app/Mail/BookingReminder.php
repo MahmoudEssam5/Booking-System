@@ -12,16 +12,22 @@ class BookingReminder extends Mailable
     use Queueable, SerializesModels;
 
     public Booking $booking;
+    public string $reminderText;
 
-    public function __construct(Booking $booking)
+    public function __construct(Booking $booking, string $reminderText)
     {
         $this->booking = $booking->load('slot', 'hr');
+        $this->reminderText = $reminderText;
     }
 
     public function build()
     {
-        return $this->subject('Reminder: Your interview is coming up')
+        return $this->subject("Reminder: Your interview is coming up")
             ->view('emails.booking_reminder')
-            ->withBooking($this->booking);
+            ->with([
+                'booking' => $this->booking,
+                'reminderText' => $this->reminderText,
+            ]);
     }
 }
+

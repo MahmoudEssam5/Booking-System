@@ -52,7 +52,7 @@ class SendBookingReminder implements ShouldQueue
                 $booking->notified_2_hours_at = now();
                 $booking->save();
                 Log::info("Sent 2-hour reminder for booking #{$booking->id}, Diff: {$diffInMinutes}");
-                $this->sendReminderEmails($booking);
+                $this->sendReminderEmails($booking,  '2 hours' );
             }
 
 
@@ -65,23 +65,23 @@ class SendBookingReminder implements ShouldQueue
                 $booking->save();
 
                 Log::info("Sent 1-day reminder for booking #{$booking->id}, Diff: {$diffInMinutes}");
-                $this->sendReminderEmails($booking);
+                $this->sendReminderEmails($booking , '1 day');
             }
         }
     }
 
-    private function sendReminderEmails(Booking $booking): void
+    private function sendReminderEmails(Booking $booking , string $reminderText): void
     {
         Log::info("Sending emails for booking {$booking->id}");
 
         if (!empty($booking->candidate_email)) {
             Mail::to($booking->candidate_email)
-                ->queue(new BookingReminder($booking));
+                ->queue(new BookingReminder($booking , $reminderText));
         }
 
         if (!empty($booking->hr?->email)) {
             Mail::to($booking->hr->email)
-                ->queue(new BookingReminderToHR($booking));
+                ->queue(new BookingReminderToHR($booking, $reminderText));
         }
     }
 }

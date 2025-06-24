@@ -106,9 +106,16 @@ class BookingResource extends Resource
                 TextColumn::make('candidate_notes'),
                 TextColumn::make('hr_notes'),
                 TextColumn::make('booking_token'),
-                TextColumn::make('confirmed_at'),
-                TextColumn::make('cancelled_at'),
+                TextColumn::make('confirmed_at')
+                    ->placeholder('N/A') ,
+                TextColumn::make('cancelled_at')
+                    ->placeholder('N/A'),
                 TextColumn::make('notified_2_hours_at')
+                    ->label('Notified 2 Hours at')
+                    ->placeholder('N/A'),
+                TextColumn::make('notified_1_hour_at')
+                    ->label('Notified 2 Hours at')
+                    ->placeholder('N/A'),
             ])
             ->filters([
                 //
